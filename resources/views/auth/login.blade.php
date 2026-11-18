@@ -1,6 +1,6 @@
 @extends('layouts.auth')
 
-@section('title', 'ورود به حساب')
+@section('title', 'ورود مدیر')
 
 @section('content')
   @if ($errors->any())
@@ -22,6 +22,5 @@
 @endsection
 
 @section('foot')
-  <div><span class="muted">حساب ندارید؟</span> <a href="{{ route('register') }}">ثبت‌نام</a></div>
-  <div style="margin-top:4px"><a href="{{ route('home') }}" class="muted">بازگشت به سایت</a></div>
+  <div><a href="{{ route('home') }}" class="muted">بازگشت به سایت</a></div>
 @endsection

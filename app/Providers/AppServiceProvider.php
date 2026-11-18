@@ -39,7 +39,6 @@ class AppServiceProvider extends ServiceProvider
         // سیاست رمز عبور: حداقل ۸ کاراکتر، حروف بزرگ و کوچک و عدد
         Password::defaults(fn () => Password::min(8)->mixedCase()->numbers());
 
-        RateLimiter::for('register', fn (Request $request) => Limit::perHour(5)->by($request->ip()));
         // نام شرکت و لوگو برای قالب‌های ورود و پنل مدیریت
         View::composer(['layouts.auth', 'layouts.admin'], function ($view) {
             $settings = app(SettingService::class);

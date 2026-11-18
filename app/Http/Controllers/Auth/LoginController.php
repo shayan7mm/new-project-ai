@@ -23,9 +23,7 @@ class LoginController extends Controller
         // جلوگیری از Session Fixation
         $request->session()->regenerate();
 
-        $default = $request->user()->isAdmin() ? route('admin.products.index') : route('home');
-
-        return redirect()->intended($default);
+        return redirect()->intended(route('admin.products.index'));
     }
 
     public function destroy(Request $request): RedirectResponse

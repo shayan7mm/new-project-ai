@@ -18,12 +18,12 @@ class SecurityHeaders
             'X-Content-Type-Options' => 'nosniff',
             'Referrer-Policy' => 'strict-origin-when-cross-origin',
             'Permissions-Policy' => 'camera=(), microphone=(), geolocation=()',
-            // اسکریپت‌ها فقط از خود سایت؛ هیچ اسکریپت inline یا onclick اجرا نمی‌شود.
+            // اسکریپت، استایل و فونت فقط از خود سایت؛ هیچ اسکریپت inline یا onclick اجرا نمی‌شود.
             'Content-Security-Policy' => implode('; ', [
                 "default-src 'self'",
                 "script-src 'self'",
-                "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com",
-                "font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com",
+                "style-src 'self' 'unsafe-inline'",
+                "font-src 'self'",
                 "img-src 'self' data: https:",
                 "connect-src 'self'",
                 "frame-ancestors 'self'",

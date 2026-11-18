@@ -3,43 +3,55 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\UpdateUserRoleRequest;
+use App\Http\Requests\Admin\UserRequest;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
+/**
+ * مدیریت حساب‌های ادمین. ثبت‌نام عمومی وجود ندارد؛
+ * هر حسابی که این‌جا ساخته شود، ادمین است.
+ */
 class UserController extends Controller
 {
-    public function index(Request $request): View
+    public function index(): View
     {
-        $search = $request->string('q')->trim()->limit(100, '')->toString();
-
-        $users = User::query()
-            ->when($search !== '', function ($q) use ($search) {
-                $like = '%'.addcslashes($search, '\\%_').'%';
-                $q->where(fn ($w) => $w->where('name', 'like', $like)->orWhere('email', 'like', $like));
-            })
-            ->orderByDesc('is_admin')
-            ->latest()
-            ->paginate(25)
-            ->withQueryString();
-
-        return view('admin.users.index', compact('users', 'search'));
+        return view('admin.users.index', [
+            'users' => User::query()->where('is_admin', true)->orderBy('id')->paginate(25),
+        ]);
     }
 
-    public function updateRole(UpdateUserRoleRequest $request, User $user): RedirectResponse
+    public function create(): View
     {
-        if ($user->is($request->user())) {
-            return back()->with('error', 'نمی‌توانید نقش حساب خودتان را تغییر دهید.');
-        }
+        return view('admin.users.form', ['user' => new User]);
+    }
 
-        $user->is_admin = $request->boolean('is_admin');
+    public function store(UserRequest $request): RedirectResponse
+    {
+        $user = new User($request->safe()->only(['name', 'email', 'password']));
+        $user->is_admin = true;
+        $user->email_verified_at = now();
         $user->save();
 
-        return back()->with('status', $user->is_admin
-            ? "«{$user->name}» به مدیر تبدیل شد."
-            : "دسترسی مدیر از «{$user->name}» گرفته شد.");
+        return redirect()->route('admin.users.index')->with('status', "ادمین «{$user->name}» ساخته شد.");
+    }
+
+    public function edit(User $user): View
+    {
+        return view('admin.users.form', ['user' => $user]);
+    }
+
+    public function update(UserRequest $request, User $user): RedirectResponse
+    {
+        $data = $request->safe()->only(['name', 'email']);
+        if ($request->filled('password')) {
+            $data['password'] = $request->validated('password');
+        }
+
+        $user->update($data);
+
+        return redirect()->route('admin.users.index')->with('status', "اطلاعات «{$user->name}» ذخیره شد.");
     }
 
     public function destroy(Request $request, User $user): RedirectResponse
@@ -50,6 +62,6 @@ class UserController extends Controller
 
         $user->delete();
 
-        return back()->with('status', "کاربر «{$user->name}» حذف شد.");
+        return back()->with('status', "حساب «{$user->name}» حذف شد.");
     }
 }

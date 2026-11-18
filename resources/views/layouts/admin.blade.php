@@ -29,7 +29,7 @@
     <a href="{{ route('admin.products.index') }}" @class(['active' => request()->routeIs('admin.products.*')])><i class="fas fa-box"></i> محصولات</a>
     <a href="{{ route('admin.categories.index') }}" @class(['active' => request()->routeIs('admin.categories.*')])><i class="fas fa-layer-group"></i> دسته‌ها</a>
     <a href="{{ route('admin.settings.edit') }}" @class(['active' => request()->routeIs('admin.settings.*')])><i class="fas fa-gear"></i> تنظیمات</a>
-    <a href="{{ route('admin.users.index') }}" @class(['active' => request()->routeIs('admin.users.*')])><i class="fas fa-users"></i> کاربران</a>
+    <a href="{{ route('admin.users.index') }}" @class(['active' => request()->routeIs('admin.users.*')])><i class="fas fa-user-shield"></i> مدیران</a>
     <a href="{{ route('admin.help') }}" @class(['active' => request()->routeIs('admin.help')])><i class="fas fa-circle-question"></i> راهنما</a>
   </div></div>
 

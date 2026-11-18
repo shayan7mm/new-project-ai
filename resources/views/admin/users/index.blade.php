@@ -1,47 +1,39 @@
 @extends('layouts.admin')
 @use('App\Support\Fa')
 
-@section('title', 'کاربران')
+@section('title', 'مدیران')
 
 @section('content')
 <div class="admin-section">
-  <h2><i class="fas fa-users"></i> کاربران <small style="font-size:11px;color:var(--ink-muted);font-weight:500">({{ Fa::digits($users->total()) }} نفر)</small></h2>
+  <h2><i class="fas fa-user-shield"></i> مدیران سایت</h2>
 
-  <form method="GET" action="{{ route('admin.users.index') }}" class="admin-toolbar">
-    <div class="admin-search"><input type="text" name="q" value="{{ $search }}" placeholder="جستجوی نام یا ایمیل..." maxlength="100"><i class="fas fa-search"></i></div>
-    <button type="submit" class="btn-search"><i class="fas fa-search"></i> جستجو</button>
-  </form>
+  <div class="admin-toolbar">
+    <span style="flex:1;font-size:11.5px;color:var(--ink-muted)">فقط این حساب‌ها می‌توانند وارد پنل شوند و محصولات را ویرایش کنند.</span>
+    <a href="{{ route('admin.users.create') }}" class="btn-add"><i class="fas fa-plus"></i> افزودن مدیر</a>
+  </div>
 
   <div style="overflow-x:auto">
     <table class="admin-table">
-      <thead><tr><th>نام</th><th>ایمیل</th><th>نقش</th><th>تاریخ عضویت</th><th>اقدامات</th></tr></thead>
+      <thead><tr><th>نام</th><th>ایمیل</th><th>تاریخ ساخت</th><th>اقدامات</th></tr></thead>
       <tbody>
-        @forelse ($users as $u)
+        @foreach ($users as $u)
           <tr>
             <td style="font-weight:600">{{ $u->name }} @if ($u->is(auth()->user()))<small style="color:var(--ink-muted)">(شما)</small>@endif</td>
             <td dir="ltr" style="text-align:right">{{ $u->email }}</td>
-            <td><span class="role-tag {{ $u->is_admin ? 'admin' : 'user' }}">{{ $u->is_admin ? 'مدیر' : 'کاربر' }}</span></td>
-            <td>{{ Fa::digits(\App\Support\Jalali::dateTime($u->created_at)) }}</td>
+            <td>{{ \App\Support\Jalali::dateTime($u->created_at) }}</td>
             <td>
-              @unless ($u->is(auth()->user()))
-                <div class="actions-cell">
-                  <form method="POST" action="{{ route('admin.users.role', $u) }}" class="inline-form"
-                        data-confirm="{{ $u->is_admin ? 'دسترسی مدیر از «'.$u->name.'» گرفته شود؟' : '«'.$u->name.'» مدیر شود؟ (دسترسی کامل به پنل)' }}">
-                    @csrf @method('PATCH')
-                    <input type="hidden" name="is_admin" value="{{ $u->is_admin ? 0 : 1 }}">
-                    <button type="submit" class="btn-edit">{{ $u->is_admin ? 'لغو مدیر' : 'مدیر کن' }}</button>
-                  </form>
-                  <form method="POST" action="{{ route('admin.users.destroy', $u) }}" class="inline-form" data-confirm="کاربر «{{ $u->name }}» حذف شود؟">
+              <div class="actions-cell">
+                <a class="btn-edit" href="{{ route('admin.users.edit', $u) }}" title="ویرایش / تغییر رمز"><i class="fas fa-pen"></i></a>
+                @unless ($u->is(auth()->user()))
+                  <form method="POST" action="{{ route('admin.users.destroy', $u) }}" class="inline-form" data-confirm="حساب «{{ $u->name }}» حذف شود؟">
                     @csrf @method('DELETE')
                     <button type="submit" class="btn-del" title="حذف"><i class="fas fa-trash"></i></button>
                   </form>
-                </div>
-              @endunless
+                @endunless
+              </div>
             </td>
           </tr>
-        @empty
-          <tr><td colspan="5" style="text-align:center;padding:18px;color:var(--ink-muted)">خالی</td></tr>
-        @endforelse
+        @endforeach
       </tbody>
     </table>
   </div>

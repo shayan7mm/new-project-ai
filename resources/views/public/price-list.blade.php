@@ -15,20 +15,7 @@
   <header><div class="container" style="position:relative">
     <div class="logo"><div class="header-logo-box"><img data-logo class="logo-img" alt=""><div class="logo-mark" style="display:none"><i class="fas fa-tooth"></i></div></div><div class="logo-text"><span class="en" data-s="companyNameEn"></span><span class="fa" data-s="companyName"></span></div></div>
     <nav><ul id="mainNav"><li><a href="{{ route('home') }}">خانه</a></li><li><a href="{{ route('home') }}" class="active">لیست قیمت</a></li><li><a href="#productList">محصولات</a></li><li><a href="#productList">دیجیتال</a></li><li><a href="#services">خدمات</a></li><li><a href="#contact">تماس</a></li></ul></nav>
-    <div class="user-menu">
-      @auth
-        @if (auth()->user()->isAdmin())
-          <a class="user-btn" href="{{ route('admin.products.index') }}"><i class="fas fa-gear"></i> <span>پنل مدیریت</span></a>
-        @else
-          <span class="user-btn"><i class="fas fa-user"></i> <span>{{ auth()->user()->name }}</span></span>
-        @endif
-        <form method="POST" action="{{ route('logout') }}">@csrf<button type="submit" class="user-btn" title="خروج"><i class="fas fa-right-from-bracket"></i></button></form>
-      @else
-        <a class="user-btn" href="{{ route('login') }}"><i class="fas fa-right-to-bracket"></i> <span>ورود</span></a>
-        <a class="user-btn" href="{{ route('register') }}"><i class="fas fa-user-plus"></i> <span>ثبت‌نام</span></a>
-      @endauth
-      <button class="nav-toggle" type="button" data-action="nav-toggle" aria-label="منو"><i class="fas fa-bars"></i></button>
-    </div>
+    <button class="nav-toggle" type="button" data-action="nav-toggle" aria-label="منو"><i class="fas fa-bars"></i></button>
   </div></header>
 
   <section class="hero"><div class="hero-logo-wrap"><div class="hero-logo-container"><img data-logo data-fallback="heroLf" class="hero-logo" alt="Baloochi"><div id="heroLf" class="hero-logo-fallback"><i class="fas fa-tooth"></i></div></div></div><div class="container"><div class="slogan-en">From Dream To Reality</div><div class="slogan-fa">از رؤیا تا واقعیت</div><div class="badge"><i class="fas fa-circle-check"></i> <span data-s="lastUpdate"></span> | <span data-s="experience"></span></div><h1>لیست قیمت <span class="brand" data-s="companyName"></span></h1><p>تأمین‌کننده تجهیزات و راهکارهای دندانپزشکی در شیراز — فروش نقدی و اقساطی، مشاوره، نصب، آموزش و خدمات پس از فروش.</p><div class="hero-meta"><div class="item"><i class="fas fa-shield-halved"></i> <span data-s="warranty"></span></div><div class="item"><i class="fas fa-credit-card"></i> نقدی و اقساطی</div><div class="item"><i class="fas fa-truck-fast"></i> ارسال به سراسر کشور</div><div class="item"><i class="fas fa-headset"></i> پشتیبانی</div></div></div></section>
@@ -68,9 +55,8 @@
 
 <div id="detailModal" class="modal-overlay hidden"><div class="modal detail-modal"><div class="modal-head"><h3><i class="fas fa-circle-info"></i> اطلاعات محصول</h3><button type="button" class="close" data-action="close-detail"><i class="fas fa-times"></i></button></div><div class="modal-body" id="detailBody"></div></div></div>
 
-@if (auth()->user()?->isAdmin())
-<div class="admin-access"><a href="{{ route('admin.products.index') }}" title="پنل مدیریت"><button type="button" tabindex="-1"><i class="fas fa-gear"></i></button></a></div>
-@endif
+{{-- دکمه ورود مدیر (مثل طرح اصلی) — ادمین واردشده مستقیم به پنل می‌رود --}}
+<div class="admin-access"><a href="{{ auth()->user()?->isAdmin() ? route('admin.products.index') : route('login') }}" title="پنل مدیریت" aria-label="پنل مدیریت"><i class="fas fa-gear"></i></a></div>
 
 <script src="{{ asset('js/price-list.js') }}?v={{ filemtime(public_path('js/price-list.js')) }}"></script>
 </body>
